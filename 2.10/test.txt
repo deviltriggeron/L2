@@ -1,0 +1,13 @@
+apple   10
+banana	2
+cherry	30  
+apple   10
+date    21
+kiwi    3   
+orange  3
+Jan	100K
+Mar	512
+Feb	2M
+
+Dec	1K
+Apr	20
