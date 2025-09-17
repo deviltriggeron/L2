@@ -145,13 +145,13 @@ func main() {
 	}
 
 	lines, err := readLines(r)
-
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)
 		os.Exit(1)
 	}
 
-	if err := grep(f, lines, pattern); err != nil {
+	err = grep(f, lines, pattern)
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)
 		os.Exit(1)
 	}

@@ -1,0 +1,6 @@
+a   b   c   d   e
+1   2   3   4   5
+alpha beta gamma delta epsilon
+foo:bar:baz
+no_delimiter_line
+red,green,blue,yellow
