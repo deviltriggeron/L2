@@ -37,7 +37,7 @@ func execute(command []string) {
 		case "echo":
 			fmt.Println(strings.Join(p[1:], " "))
 		case "kill":
-			if len(p[1]) < 2 {
+			if len(p) < 2 {
 				fmt.Fprintln(os.Stderr, "kill: pid required")
 				return
 			}
@@ -97,11 +97,15 @@ func printPrompt() {
 }
 
 func main() {
+	var currentCmd *exec.Cmd
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT)
 
 	go func() {
 		for range sigCh {
+			if currentCmd != nil && currentCmd.Process != nil {
+				currentCmd.Process.Signal(syscall.SIGINT)
+			}
 		}
 	}()
 
