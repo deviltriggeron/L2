@@ -12,7 +12,6 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
-	"time"
 )
 
 func execute(command []string) {
@@ -116,7 +115,8 @@ func main() {
 		line, err := reader.ReadString('\n')
 		if err != nil {
 			if errors.Is(err, io.EOF) {
-				return
+				fmt.Println()
+				break
 			}
 			fmt.Println("error:", err)
 			continue
@@ -130,7 +130,5 @@ func main() {
 		tokens := tokenize(line)
 
 		execute(tokens)
-
-		time.Sleep(1 * time.Millisecond)
 	}
 }
