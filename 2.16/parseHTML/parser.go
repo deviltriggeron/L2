@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"main/entity"
 	"main/loader"
 	"net/http"
 	"net/url"
@@ -91,21 +92,21 @@ func extractResources(baseUrl *url.URL, r io.Reader) []string {
 	return res
 }
 
-func ParseHTML(baseUrl string, level int, page bool, dir string, pagesVisited map[string]bool, resVisited map[string]bool) {
+func ParseHTML(flag entity.Flags, dir string, pagesVisited map[string]bool, resVisited map[string]bool) {
 
-	if pagesVisited[baseUrl] {
+	if pagesVisited[*flag.Url] {
 		return
 	}
-	pagesVisited[baseUrl] = true
+	pagesVisited[*flag.Url] = true
 
 	netClient := setConfig()
-	u, err := url.Parse(baseUrl)
+	u, err := url.Parse(*flag.Url)
 	if err != nil {
-		log.Println("bad url:", baseUrl, err)
+		log.Println("bad url:", *flag.Url, err)
 		return
 	}
 
-	response, err := netClient.Get(baseUrl)
+	response, err := netClient.Get(*flag.Url)
 	if err != nil {
 		fmt.Println("error get response:", err)
 		os.Exit(1)
@@ -119,7 +120,7 @@ func ParseHTML(baseUrl string, level int, page bool, dir string, pagesVisited ma
 	}
 
 	var file *os.File
-	file, err = createHTML(file, dir, baseUrl)
+	file, err = createHTML(file, dir, *flag.Url)
 
 	if err != nil {
 		fmt.Println("Unable to create file:", err)
@@ -129,7 +130,7 @@ func ParseHTML(baseUrl string, level int, page bool, dir string, pagesVisited ma
 	file.Close()
 
 	links := extractLinks(u, bytes.NewReader(content))
-	if page {
+	if *flag.Page {
 		res := extractResources(u, bytes.NewReader(content))
 		for _, r := range res {
 			if !resVisited[r] {
@@ -142,14 +143,16 @@ func ParseHTML(baseUrl string, level int, page bool, dir string, pagesVisited ma
 		}
 	}
 
-	if level == 0 {
+	if *flag.Level == 0 {
 		return
 	}
 
 	for _, l := range links {
 		lu, err := url.Parse(l)
 		if err == nil && lu.Host == u.Host {
-			ParseHTML(l, level-1, page, dir, pagesVisited, resVisited)
+			newL := *flag.Level - 1
+			newF := &entity.Flags{Url: &l, Level: &newL, Page: flag.Page}
+			ParseHTML(*newF, dir, pagesVisited, resVisited)
 		}
 	}
 }

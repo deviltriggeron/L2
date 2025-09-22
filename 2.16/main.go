@@ -43,5 +43,5 @@ func main() {
 	dir := createDir(*f.Url)
 	pagesVisited := make(map[string]bool)
 	resVisited := make(map[string]bool)
-	parser.ParseHTML(*f.Url, *f.Level, *f.Page, dir, pagesVisited, resVisited)
+	parser.ParseHTML(*f, dir, pagesVisited, resVisited)
 }
