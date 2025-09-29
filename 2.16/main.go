@@ -3,13 +3,10 @@ package main
 import (
 	"flag"
 	"log"
-
 	entity "main/entity"
-
+	parser "main/parseHTML"
 	"net/url"
 	"os"
-
-	parser "main/parseHTML"
 )
 
 func parseFlags() *entity.Flags {
